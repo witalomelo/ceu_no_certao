@@ -1,0 +1,33 @@
+{
+  "name": "familias_sertao",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "scripts": {
+    "dev": "node -r sucrase/register src/server.js",
+    "start": "node -r sucrase/register src/server.js",
+    "build": "sucrase ./src -d ./dist --transforms imports && copyfiles src/swagger.js dist"
+  },
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "cors": "^2.8.5",
+    "crypto": "^1.0.1",
+    "dotenv": "^16.4.5",
+    "express": "^4.21.1",
+    "jsonwebtoken": "^9.0.2",
+    "nodemailer": "^6.9.15",
+    "pg": "^8.13.1",
+    "pg-hstore": "^2.3.4",
+    "sequelize": "^6.37.4",
+    "swagger-jsdoc": "^6.2.8",
+    "swagger-ui-express": "^5.0.1",
+    "yup": "^1.4.0"
+  },
+  "devDependencies": {
+    "copyfiles": "^2.4.1",
+    "nodemon": "^3.1.7",
+    "sequelize-cli": "^6.6.2",
+    "sucrase": "^3.35.0",
+    "vercel": "^37.12.1"
+  }
+}
