@@ -7,7 +7,7 @@ class FamiliaController {
   // Criar uma nova família
   async store(req, res) {
     //console.log(req.body);
-    const { familia, endereco, saneamento } = req.body;
+    const { familia, endereco, saneamento, membros } = req.body;
 
     try {
       // cria saneamento
@@ -31,6 +31,15 @@ class FamiliaController {
         is_responsavel: true,
       });
 
+      if (Array.isArray(membros) && membros.length > 0) {
+        for (const membro of membros) {
+          await Membro.create({
+            ...membro,
+            familia_id: familiaCriada.id,
+          });
+        }
+      }
+
       const {
         id,
         endereco_id,
@@ -46,20 +55,19 @@ class FamiliaController {
         lider,
       } = familiaCriada;
 
-      return res.status(200).json({ message: "Família criada com sucesso" });
+      // return res.status(200).json({ message: "Família criada com sucesso" });
 
-      // return res.json({
-      //   id,
-      //   endereco_id,
-      //   observacao,
-      //   beneficio,
-      //   status: true, // Mantenha o status como true
-      //   moradia,
-      //   tipo_casa,
-      //   num_comodos,
-      //   num_moradores,
-      //   endereco: enderecoCriado,
-      // });
+      return res.status(200).json({
+        id,
+        endereco_id,
+        beneficio,
+        status: true,
+        moradia,
+        tipo_casa,
+        num_comodos,
+        num_moradores,
+        endereco: enderecoCriado,
+      });
     } catch (error) {
       console.error(error);
       return res.status(500).json({ error: "Erro ao criar a família" });

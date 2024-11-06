@@ -4,7 +4,7 @@ import Familia from "../models/Familia";
 class MembroController {
   async store(req, res) {
     try {
-      const { familia_id } = req.body;
+      const { familia_id, is_responsavel, nome } = req.body;
 
       // Verifica se a família existe e se o status é true
       const familia = await Familia.findByPk(familia_id);
@@ -17,7 +17,22 @@ class MembroController {
         return res.status(400).json({ error: "Família não está ativa" });
       }
 
-      // Se a família estiver ativa, cria um novo membro
+      if (is_responsavel) {
+        const responsavelAtual = await Membro.findOne({
+          where: {
+            familia_id,
+            is_responsavel: true,
+          },
+        });
+
+        if (responsavelAtual) {
+          await responsavelAtual.update({ is_responsavel: false });
+        }
+
+        await familia.update({ resp_familiar: nome });
+      }
+
+      // Novo membro
       const membro = await Membro.create(req.body);
 
       return res
