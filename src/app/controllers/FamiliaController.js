@@ -39,7 +39,7 @@ class FamiliaController {
           });
         }
       }
-
+       //console.log(familiaCriada);
       const {
         id,
         endereco_id,
