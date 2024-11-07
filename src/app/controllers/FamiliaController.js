@@ -30,7 +30,7 @@ class FamiliaController {
         familia_id: familiaCriada.id,
         is_responsavel: true,
       });
-
+      //console.log(responsavelCriado);
       if (Array.isArray(membros) && membros.length > 0) {
         for (const membro of membros) {
           await Membro.create({
