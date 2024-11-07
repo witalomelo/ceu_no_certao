@@ -17,19 +17,19 @@ class MembroController {
         return res.status(400).json({ error: "Família não está ativa" });
       }
 
-      if(is_responsavel){
+      if (is_responsavel) {
         const responsavelAtual = await Membro.findOne({
           where: {
             familia_id,
-            is_responsavel: true
-          }
+            is_responsavel: true,
+          },
         });
 
-        if (responsavelAtual){
-          await responsavelAtual.update({is_responsavel: false});
+        if (responsavelAtual) {
+          await responsavelAtual.update({ is_responsavel: false });
         }
 
-        await familia.update({resp_familiar: nome});
+        await familia.update({ resp_familiar: nome });
       }
 
       // Novo membro
@@ -120,17 +120,44 @@ class MembroController {
   }
 
   async update(req, res) {
+    const { id } = req.params;
+    const { is_responsavel, familia_id } = req.body;
+
+   
+    const transaction = await Membro.sequelize.transaction();
+
     try {
-      const { id } = req.params;
-      const membro = await Membro.findByPk(id);
+      const membro = await Membro.findByPk(id, { transaction });
 
       if (!membro) {
+        await transaction.rollback();
         return res.status(404).json({ error: "Membro não encontrado" });
       }
 
-      await membro.update(req.body);
+      
+      if (is_responsavel && familia_id) {
+        await Membro.update(
+          { is_responsavel: false },
+          {
+            where: { familia_id, is_responsavel: true },
+            transaction,
+          }
+        );
+
+        
+        await Familia.update(
+          { resp_familiar: membro.nome }, 
+          { where: { id: familia_id }, transaction }
+        );
+      }
+
+      
+      await membro.update(req.body, { transaction });
+
+      await transaction.commit();
       return res.json(membro);
     } catch (error) {
+      await transaction.rollback();
       return res.status(500).json({ error: "Erro ao atualizar o membro" });
     }
   }
