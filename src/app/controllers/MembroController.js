@@ -123,7 +123,6 @@ class MembroController {
     const { id } = req.params;
     const { is_responsavel, familia_id } = req.body;
 
-   
     const transaction = await Membro.sequelize.transaction();
 
     try {
@@ -134,7 +133,6 @@ class MembroController {
         return res.status(404).json({ error: "Membro não encontrado" });
       }
 
-      
       if (is_responsavel && familia_id) {
         await Membro.update(
           { is_responsavel: false },
@@ -144,14 +142,12 @@ class MembroController {
           }
         );
 
-        
         await Familia.update(
-          { resp_familiar: membro.nome }, 
+          { resp_familiar: membro.nome },
           { where: { id: familia_id }, transaction }
         );
       }
 
-      
       await membro.update(req.body, { transaction });
 
       await transaction.commit();
