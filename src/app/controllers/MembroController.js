@@ -132,7 +132,7 @@ class MembroController {
         await transaction.rollback();
         return res.status(404).json({ error: "Membro não encontrado" });
       }
-
+      // Verifica se a família existe e se o status é true
       if (is_responsavel && familia_id) {
         await Membro.update(
           { is_responsavel: false },
