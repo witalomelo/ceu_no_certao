@@ -17,19 +17,19 @@ class MembroController {
         return res.status(400).json({ error: "Família não está ativa" });
       }
 
-      if (is_responsavel) {
+      if(is_responsavel){
         const responsavelAtual = await Membro.findOne({
           where: {
             familia_id,
-            is_responsavel: true,
-          },
+            is_responsavel: true
+          }
         });
 
-        if (responsavelAtual) {
-          await responsavelAtual.update({ is_responsavel: false });
+        if (responsavelAtual){
+          await responsavelAtual.update({is_responsavel: false});
         }
 
-        await familia.update({ resp_familiar: nome });
+        await familia.update({resp_familiar: nome});
       }
 
       // Novo membro
